@@ -45,6 +45,8 @@ return {
       }
       vim.lsp.config("clangd", {})
       vim.lsp.enable("clangd")
+      vim.lsp.config("luau_lsp", {})
+      vim.lsp.enable("luau_lsp")
     end },
 
   -- Autocompletion

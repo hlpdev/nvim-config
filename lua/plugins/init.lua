@@ -1,13 +1,9 @@
 return {
 
-  -- Colorscheme
-  { "catppuccin/nvim", name = "catppuccin", priority = 1000,
-    config = function() vim.cmd.colorscheme "catppuccin-mocha" end },
+  -- Colorschemes are defined in lua/plugins/themes.lua
 
-  -- File tree
-  { "nvim-neo-tree/neo-tree.nvim",
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-tree/nvim-web-devicons", "MunifTanjim/nui.nvim" },
-    keys = { { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "File Explorer" } } },
+  -- File tree is now defined in lua/plugins/asset-preview.lua
+  -- (split out so the asset-viewer <cr> mapping lives with the neo-tree spec)
 
   -- Fuzzy finder
   { "nvim-telescope/telescope.nvim",
@@ -95,6 +91,17 @@ return {
   -- Bufferline (tabs at the top)
   { "akinsho/bufferline.nvim",
     dependencies = "nvim-tree/nvim-web-devicons",
-    config = true },
+    config = true 
+  },
+
+  -- lsp signature
+  { "ray-x/lsp_signature.nvim",
+    event = "InsertEnter",
+    opts = {
+      hint_enable = false,
+      handler_opts = { border = "rounded" },
+      select_signature_key = "<A-n>",
+    },
+  },
 
 }

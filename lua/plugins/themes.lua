@@ -1,11 +1,7 @@
--- Colorschemes. Several installed; switch live with the picker below.
--- Default is set at the bottom (DEFAULT_COLORSCHEME).
+-- Extra colorschemes. The default (tokyonight-night) is set via LazyVim's
+-- `colorscheme` option in lua/plugins/init.lua.
 --
---   <leader>uc  -> live colorscheme picker (Telescope)
---
--- To change the default permanently, edit DEFAULT_COLORSCHEME.
-
-local DEFAULT_COLORSCHEME = "tokyonight-night"
+--   <leader>uc  -> live colorscheme picker (defined in config/keymaps.lua)
 
 return {
   -- Tokyonight: clean modern dark; "night" is the darkest variant.
@@ -26,29 +22,4 @@ return {
   -- Gruvbox: the classic retro warm palette.
   { "ellisonleao/gruvbox.nvim", lazy = true,
     opts = { contrast = "hard" } },
-
-  -- Apply the default once everything is loaded, and add the live picker.
-  {
-    "folke/tokyonight.nvim", -- reuse an always-loaded spec to hang config on
-    lazy = false,
-    priority = 999,
-    config = function()
-      pcall(vim.cmd.colorscheme, DEFAULT_COLORSCHEME)
-
-      -- Live picker: lists installed colorschemes, applies on <CR>.
-      vim.keymap.set("n", "<leader>uc", function()
-        local ok, builtin = pcall(require, "telescope.builtin")
-        if ok then
-          builtin.colorscheme({ enable_preview = true })
-        else
-          -- fallback if telescope isn't available
-          vim.ui.select(vim.fn.getcompletion("", "color"), {
-            prompt = "Colorscheme",
-          }, function(choice)
-            if choice then vim.cmd.colorscheme(choice) end
-          end)
-        end
-      end, { desc = "Pick colorscheme" })
-    end,
-  },
 }

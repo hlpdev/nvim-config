@@ -1,4 +1,4 @@
--- Asset preview: in neo-tree, <cr> on a game-dev asset opens the
+-- Asset preview: in the snacks explorer, <cr> on a game-dev asset opens the
 -- respective external viewer instead of dumping binary into a buffer.
 --
 -- Konsole can't render inline (no Kitty graphics / Sixel), so each
@@ -7,7 +7,7 @@
 --   video  -> mpv       models -> f3d
 --
 -- Keymaps:
---   <cr>        play / open the asset under the cursor (in neo-tree)
+--   <cr>        play / open the asset under the cursor (in the explorer)
 --   <leader>s   stop the currently playing audio
 --
 -- Edit the `viewers` table to swap programs (e.g. qimgv -> gwenview).
@@ -85,30 +85,27 @@ end
 vim.keymap.set("n", "<leader>s", stop_audio, { desc = "Stop audio playback" })
 
 return {
-  "nvim-neo-tree/neo-tree.nvim",
-  lazy = false, -- load at startup so :Neotree exists for the VimEnter autocmd
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-    "nvim-tree/nvim-web-devicons",
-    "MunifTanjim/nui.nvim",
-  },
-  keys = { { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "File Explorer" } },
+  "folke/snacks.nvim",
   opts = {
-    filesystem = {
-      window = {
-        mappings = {
-          ["<cr>"] = "open_asset_or_default",
+    picker = {
+      sources = {
+        explorer = {
+          actions = {
+            confirm = function(picker, item)
+              -- asset file: launch the external viewer, keep the explorer open
+              if item and item.file and not item.dir and open_asset(item.file) then
+                return
+              end
+              -- not an asset (or no viewer matched): default explorer confirm
+              local ok, explorer_actions = pcall(require, "snacks.explorer.actions")
+              if ok and explorer_actions.actions and explorer_actions.actions.confirm then
+                explorer_actions.actions.confirm(picker, item)
+              else
+                require("snacks").picker.actions.jump(picker, item, { action = "jump" })
+              end
+            end,
+          },
         },
-      },
-      commands = {
-        open_asset_or_default = function(state)
-          local node = state.tree:get_node()
-          if node.type == "file" and open_asset(node.path) then
-            return
-          end
-          -- not an asset (or no viewer matched): normal neo-tree open
-          require("neo-tree.sources.filesystem.commands").open(state)
-        end,
       },
     },
   },

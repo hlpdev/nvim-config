@@ -1,0 +1,5 @@
+-- Autocmds are automatically loaded on the VeryLazy event.
+-- Default LazyVim autocmds: https://www.lazyvim.org/configuration/general#auto-commands
+--
+-- NOTE: the "open neo-tree on startup" behavior lives in init.lua, because
+-- this file loads after VimEnter has already fired.
